@@ -2,4 +2,4 @@ This project is a showcase of the HTML created by the code found on a [wonderful
 
 Here's a list of maps that I have found to be useful:
 * [Indiana State Parks](https://ephemerant.github.io/optimal-roadtrips/IN_State_Parks.html)
-* [Kentucky State Parks](https://ephemerant.github.io/optimal-roadtrips/KY_State_Parks.html)
+* [Kentucky State Parks (includes Historic Sites and National Park)](https://ephemerant.github.io/optimal-roadtrips/KY_State_Parks.html)
