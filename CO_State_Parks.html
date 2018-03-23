@@ -1,105 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
 
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-        <meta name="description" content="Randy Olson uses machine learning to find the optimal road trip across the U.S.">
-        <meta name="author" content="Randal S. Olson">
-        
-        <title>The optimal road trip across the U.S. according to machine learning</title>
-        <style>
-          html, body, #map-canvas {
-            height: 100%;
-            margin: 0px;
-            padding: 0px
-          }
-          #panel {
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            margin-left: -180px;
-            z-index: 5;
-            background-color: #fff;
-            padding: 10px;
-            border: 1px solid #999;
-          }
-        </style>
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-        <script>
-            var routes_list = []
-            var markerOptions = {icon: "http://maps.gstatic.com/mapfiles/markers2/marker.png"};
-            var directionsDisplayOptions = {preserveViewport: true,
-                                            markerOptions: markerOptions};
-            var directionsService = new google.maps.DirectionsService();
-            var map;
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 
-            function initialize() {
-              var center = new google.maps.LatLng(39, -96);
-              var mapOptions = {
-                zoom: 5,
-                center: center
-              };
-              map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-              for (i=0; i<routes_list.length; i++) {
-                routes_list[i].setMap(map); 
-              }
-            }
+  <title>The optimal road trip through all of Indiana's state parks</title>
+  <style>
+    html,
+    body,
+    #map-canvas {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+    }
 
-            function calcRoute(start, end, routes) {
-              
-              var directionsDisplay = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+    #panel {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      margin-left: -180px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #999;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxiavdI9MzT_Ikjn_pfRrMmYRYnFfDUro"></script>
+  <script>
+    var routes_list = []
+    var markerOptions = { icon: "https://maps.gstatic.com/mapfiles/markers2/marker.png" };
+    var directionsDisplayOptions = {      
+preserveViewport: true,
+      markerOptions: markerOptions
+    };
+    var directionsService = new google.maps.DirectionsService();
+    var map;
 
-              var waypts = [];
-              for (var i = 0; i < routes.length; i++) {
-                waypts.push({
-                  location:routes[i],
-                  stopover:true});
-                }
-              
-              var request = {
-                  origin: start,
-                  destination: end,
-                  waypoints: waypts,
-                  optimizeWaypoints: false,
-                  travelMode: google.maps.TravelMode.DRIVING
-              };
+    function initialize() {
+      var center = new google.maps.LatLng(39, -96);
+      var mapOptions = {
+        zoom: 5,
+        center: center
+      };
+      map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+      for (i = 0; i < routes_list.length; i++) {
+        routes_list[i].setMap(map);
+      }
+    }
 
-              directionsService.route(request, function(response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);      
-                }
-              });
+    function calcRoute(start, end, routes) {
 
-              routes_list.push(directionsDisplay);
-            }
+      var directionsDisplay = new google.maps.DirectionsRenderer(directionsDisplayOptions);
 
-            function createRoutes(route) {
-                // Google's free map API is limited to 10 waypoints so need to break into batches
-                route.push(route[0]);
-                var subset = 0;
-                while (subset < route.length) {
-                    var waypointSubset = route.slice(subset, subset + 10);
+      var waypts = [];
+      for (var i = 0; i < routes.length; i++) {
+        waypts.push({
+          location: routes[i],
+          stopover: true
+        });
+      }
 
-                    var startPoint = waypointSubset[0];
-                    var midPoints = waypointSubset.slice(1, waypointSubset.length - 1);
-                    var endPoint = waypointSubset[waypointSubset.length - 1];
+      var request = {
+        origin: start,
+        destination: end,
+        waypoints: waypts,
+        optimizeWaypoints: false,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
 
-                    calcRoute(startPoint, endPoint, midPoints);
+      directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+        }
+      });
 
-                    subset += 9;
-                }
-            }
-    			optimal_route = ['Lathrop State Park, CO', 'Great Sand Dunes National Park and Preserve, CO', 'Browns Canyon National Monument, CO', 'Arkansas Headwaters Recreation Area, West Sackett Avenue, Salida, CO', 'Lake Pueblo State Park, CO', 'Cheyenne Mountain State Park, CO', 'Mueller State Park, CO', 'Florissant Fossil Beds National Monument, CO', 'Eleven Mile State Park, CO', 'Spinney Mountain State Park, CO', 'Arapaho National Recreation Area, CO', 'Sylvan Lake State Park, CO', 'Paonia State Park, Somerset, CO 81434', 'Crawford State Park, CO', 'Black Ridge Rd, Crawford, CO 81415', 'Curecanti National Recreation Area, CO', 'Entrance Station, Colorado 81401', 'Lone Mesa State Park, CO', 'Canyons of the Ancients National Monument, CO', 'Hovenweep National Monument, CO', 'Yucca House National Monument, CO', 'Mesa Verde National Park and UNESCO World Heritage Site, CO', 'Mancos State Park, CO', 'Rosa Campground, Arboles, CO 81121', 'Chimney Rock National Monument, CO', 'Ridgway State Park, CO', 'Sweitzer Lake State Park, CO', 'Mountain Island Ranch, 5350 Little Dolores Rd, Glade Park, CO 81523', 'Colorado National Monument, CO', 'James M. Robb - Colorado River State Park, CO', 'Highline Lake State Park, CO', 'Vega State Park, CO', 'Harvey Gap State Park, CO', 'Rifle Falls State Park, CO', 'Rifle Gap State Park, CO', 'Dinosaur National Monument, CO', 'Elkhead State Park, CO', 'Yampa River State Park, CO', 'Steamboat Lake State Park, CO', 'Pearl Lake State Park, Rcr 129, Clark, CO 80428', 'Stagecoach State Park, CO', 'State Forest State Park, CO', 'Lory State Park, CO', 'Boyd Lake State Park, CO', 'St. Vrain State Park, CO', 'Rocky Mountain National Park', 'Eldorado Canyon State Park Visitor Center, 321 Eldorado Springs Dr, Boulder, CO 80303', 'Golden Gate Canyon State Park, CO', 'Staunton State Park, CO', 'Roxborough State Park, CO', 'Chatfield State Park, CO', 'Castlewood Canyon State Park, CO', 'Cherry Creek State Park, CO', 'Barr Lake State Park, CO', 'Jackson Lake State Park, CO', 'North Sterling State Park, CO', 'Sand Creek Massacre National Historic Site, CO', 'John Martin Reservoir State Park, CO', "Bent's Old Fort National Historic Site, CO", 'Trinidad Lake State Park, CO', 'Lathrop State Park, CO']
-            
-            createRoutes(optimal_route);
+      routes_list.push(directionsDisplay);
+    }
 
-            google.maps.event.addDomListener(window, 'load', initialize);
+    function createRoutes(route) {
+      // Google's free map API is limited to 10 waypoints so need to break into batches
+      route.push(route[0]);
+      var subset = 0;
+      while (subset < route.length) {
+        var waypointSubset = route.slice(subset, subset + 10);
 
-        </script>
-      </head>
-      <body>
-        <div id="map-canvas"></div>
-      </body>
-    </html>
-    
+        var startPoint = waypointSubset[0];
+        var midPoints = waypointSubset.slice(1, waypointSubset.length - 1);
+        var endPoint = waypointSubset[waypointSubset.length - 1];
+
+        calcRoute(startPoint, endPoint, midPoints);
+
+        subset += 9;
+      }
+    }
+    optimal_route = ['Lathrop State Park, CO', 'Great Sand Dunes National Park and Preserve, CO', 'Browns Canyon National Monument, CO', 'Arkansas Headwaters Recreation Area, West Sackett Avenue, Salida, CO', 'Lake Pueblo State Park, CO', 'Cheyenne Mountain State Park, CO', 'Mueller State Park, CO', 'Florissant Fossil Beds National Monument, CO', 'Eleven Mile State Park, CO', 'Spinney Mountain State Park, CO', 'Arapaho National Recreation Area, CO', 'Sylvan Lake State Park, CO', 'Paonia State Park, Somerset, CO 81434', 'Crawford State Park, CO', 'Black Ridge Rd, Crawford, CO 81415', 'Curecanti National Recreation Area, CO', 'Entrance Station, Colorado 81401', 'Lone Mesa State Park, CO', 'Canyons of the Ancients National Monument, CO', 'Hovenweep National Monument, CO', 'Yucca House National Monument, CO', 'Mesa Verde National Park and UNESCO World Heritage Site, CO', 'Mancos State Park, CO', 'Rosa Campground, Arboles, CO 81121', 'Chimney Rock National Monument, CO', 'Ridgway State Park, CO', 'Sweitzer Lake State Park, CO', 'Mountain Island Ranch, 5350 Little Dolores Rd, Glade Park, CO 81523', 'Colorado National Monument, CO', 'James M. Robb - Colorado River State Park, CO', 'Highline Lake State Park, CO', 'Vega State Park, CO', 'Harvey Gap State Park, CO', 'Rifle Falls State Park, CO', 'Rifle Gap State Park, CO', 'Dinosaur National Monument, CO', 'Elkhead State Park, CO', 'Yampa River State Park, CO', 'Steamboat Lake State Park, CO', 'Pearl Lake State Park, Rcr 129, Clark, CO 80428', 'Stagecoach State Park, CO', 'State Forest State Park, CO', 'Lory State Park, CO', 'Boyd Lake State Park, CO', 'St. Vrain State Park, CO', 'Rocky Mountain National Park', 'Eldorado Canyon State Park Visitor Center, 321 Eldorado Springs Dr, Boulder, CO 80303', 'Golden Gate Canyon State Park, CO', 'Staunton State Park, CO', 'Roxborough State Park, CO', 'Chatfield State Park, CO', 'Castlewood Canyon State Park, CO', 'Cherry Creek State Park, CO', 'Barr Lake State Park, CO', 'Jackson Lake State Park, CO', 'North Sterling State Park, CO', 'Sand Creek Massacre National Historic Site, CO', 'John Martin Reservoir State Park, CO', "Bent's Old Fort National Historic Site, CO", 'Trinidad Lake State Park, CO', 'Lathrop State Park, CO']
+
+    createRoutes(optimal_route);
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+  </script>
+</head>
+
+<body>
+  <div id="map-canvas"></div>
+</body>
+
+</html>
